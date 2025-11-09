@@ -32,7 +32,7 @@ Coding-for-economist-assignment-2025/
 
 # How to execute the project
 
-Python: Run the file integrated in the project Coding_for_economist_python.ipynb in VS code
+Python: Run the file integrated in the project Coding_for_economist_python.ipynb in VS code. The project is in src-python directory
 
 Stata: Open Stata on the desktop and write in the command line: 
 cd "C:\Users\yourname\Desktop\Coding-for-economist-assignment-2025\src\stata"

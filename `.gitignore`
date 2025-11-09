@@ -1,0 +1,23 @@
+
+Data and output 
+
+data/clean/
+output/
+!output/.gitkeep
+
+Temporary files stata
+
+*.log
+*.smcl
+
+Temporary file python
+
+pycache/
+*.pyc
+*.ipynb_checkpoints/
+
+Editor and Operating system
+
+.vscode/
+.DS_Store
+Thumbs.db

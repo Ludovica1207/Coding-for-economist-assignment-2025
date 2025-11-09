@@ -1,60 +1,68 @@
 /********************************************************************
-  00_master.do  —  Portable master for the Diamonds project
-  
+  00_master.do  —  Portable master file for the Diamonds Project
+ 
 ********************************************************************/
 
 version 18
 clear all
 set more off
 
-* -----------------------------
-* 1) Locate project directories
-* -----------------------------
-* Full path of this master file while it runs
-local _me = c(filename)
+* --------------------------------------------------------------
+* 1) Locate the folder of this master file and compute root path
+* --------------------------------------------------------------
+* If run with a full path, c(filename) contains the location
+local ME = c(filename)
 
-* Folder of this master (remove the filename)
-local _dofolder = subinstr("`_me'","00_master.do","",.)
-cd "`_dofolder'"
+if "`ME'" != "" {
+    * Remove the filename from the path
+    local DOFOLDER = subinstr("`ME'","00_master.do","",.)
+}
+else {
+    * Fallback: if opened manually, use current working directory
+    local DOFOLDER = c(pwd)
+}
 
-* Project root = one level above /src/stata  (handle / and \)
-local _root = subinstr("`_dofolder'","/src/stata","",.)
-local _root = subinstr("`_root'","\src\stata","",.)
-global root "`_root'"
+* Normalize backslashes to forward slashes (Windows safe)
+local DOFOLDER = subinstr("`DOFOLDER'","\","/",.)
 
-* Global paths (ONLY $macros, as requested)
-global raw      "$root/data/raw"
-global clean    "$root/data/clean"
-global output   "$root/output"
-global figures  "$root/output/figures"
-global tables   "$root/output/tables"
-global stata    "$root/src/stata"
+* Project root = remove "/src/stata" from the path
+local ROOT = subinstr("`DOFOLDER'","/src/stata","",.)
 
-* --------------------------------
-* 2) Create folders if they exist
-* --------------------------------
+* --------------------------------------------------------------
+* 2) Define global paths (ONLY $macros)
+* --------------------------------------------------------------
+global root "`ROOT'"
+global stata "$root/src/stata"
+global raw "$root/data/raw"
+global clean "$root/data/clean"
+global output "$root/output"
+global figures "$root/output/figures"
+global tables "$root/output/tables"
+
+* --------------------------------------------------------------
+* 3) Create folders if they don’t exist
+* --------------------------------------------------------------
 cap mkdir "$raw"
 cap mkdir "$clean"
 cap mkdir "$output"
 cap mkdir "$figures"
 cap mkdir "$tables"
 
-* -------------------------
-* 3) Optional: start a log
-* -------------------------
+* --------------------------------------------------------------
+* 4) (Optional) Start a log file
+* --------------------------------------------------------------
 cap log close _all
 log using "$output/master_log.smcl", replace
 
-* --------------------------------------
-* 4) Run the project sub do-files
-*    (they are in the same folder)
-* --------------------------------------
+* --------------------------------------------------------------
+* 5) Run all the sub .do files (same folder as this master)
+* --------------------------------------------------------------
 do "$stata/01_import_and_clean_data.do"
 do "$stata/02_statistics_and_graphs.do"
 do "$stata/03_normal_distribution.do"
 
-* -------------
-* 5) All done!
-* -------------
-di as result "✓ Pipeline completed successfully."
+* --------------------------------------------------------------
+* 6) Finish
+* --------------------------------------------------------------
+di as result "✓ All Stata scripts executed successfully."
 log close

@@ -26,8 +26,8 @@ cap mkdir "$tables"
 
 
 * Setting the other modules that the project should report
-do "stata/01_import_and_clean_data.do"
-do "stata/02_statistics_and_graphs.do"
-do "stata/03_normal_distribution.do"
+do "01_import_and_clean_data.do"
+do "02_statistics_and_graphs.do"
+do "03_normal_distribution.do"
 
 log close

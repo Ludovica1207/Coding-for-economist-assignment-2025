@@ -1,0 +1,18 @@
+
+# File  / editor
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Teamporary files Stata
+*.log
+*.smcl
+
+# Teamporary files Python
+__pycache__/
+*.pyc
+*.ipynb_checkpoints/
+
+# keep output
+!data/clean/
+!output/

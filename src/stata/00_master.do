@@ -1,22 +1,28 @@
+/********************************************************************
+  00_master.do  —  Portable master for the Diamonds project
+  
+********************************************************************/
+
 version 18
 clear all
 set more off
 
-* ==========================================================
-* MASTER DO-FILE for the Diamonds Project
-* ==========================================================
+* -----------------------------
+* 1) Locate project directories
+* -----------------------------
+* Full path of this master file while it runs
+local _me = c(filename)
 
-* --- Find this master file’s folder and the project root ---
-local this = c(filename)
-local dofolder = subinstr("`this'","00_master.do","",.)
-cd "`dofolder'"
+* Folder of this master (remove the filename)
+local _dofolder = subinstr("`_me'","00_master.do","",.)
+cd "`_dofolder'"
 
-* The project root is one level above src/stata
-local root = subinstr("`dofolder'","/src/stata","",.)
-local root = subinstr("`root'","\src\stata","",.)
-global root "`root'"
+* Project root = one level above /src/stata  (handle / and \)
+local _root = subinstr("`_dofolder'","/src/stata","",.)
+local _root = subinstr("`_root'","\src\stata","",.)
+global root "`_root'"
 
-* --- Define global paths using $ (no braces) ---
+* Global paths (ONLY $macros, as requested)
 global raw      "$root/data/raw"
 global clean    "$root/data/clean"
 global output   "$root/output"
@@ -24,23 +30,31 @@ global figures  "$root/output/figures"
 global tables   "$root/output/tables"
 global stata    "$root/src/stata"
 
-* --- Create folders if they do not exist ---
+* --------------------------------
+* 2) Create folders if they exist
+* --------------------------------
 cap mkdir "$raw"
 cap mkdir "$clean"
 cap mkdir "$output"
 cap mkdir "$figures"
 cap mkdir "$tables"
 
-* --- Optional log ---
+* -------------------------
+* 3) Optional: start a log
+* -------------------------
 cap log close _all
 log using "$output/master_log.smcl", replace
 
-* --- Run all sub do-files (located in the same folder) ---
+* --------------------------------------
+* 4) Run the project sub do-files
+*    (they are in the same folder)
+* --------------------------------------
 do "$stata/01_import_and_clean_data.do"
 do "$stata/02_statistics_and_graphs.do"
 do "$stata/03_normal_distribution.do"
 
-* --- End ---
-di as text "✓ All Stata scripts executed successfully."
+* -------------
+* 5) All done!
+* -------------
+di as result "✓ Pipeline completed successfully."
 log close
-
